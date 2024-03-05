@@ -18,7 +18,10 @@ class UniversityForm(forms.Form):
         (3, 'Data'),
     )
 
-    name = forms.CharField()
+    name = forms.CharField(widget=forms.TextInput(attrs={
+        'hx-get':reverse_lazy('index'),
+        'hx-trigger':'keyup'
+        }))
     age = forms.IntegerField()
     subject = forms.ChoiceField(
         choices=SUBJECT_CHOICES,
