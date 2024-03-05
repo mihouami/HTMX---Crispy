@@ -1,0 +1,4 @@
+django-admin startproject project
+cd project
+django-admin startapp core
+
