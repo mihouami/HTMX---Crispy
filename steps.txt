@@ -1,4 +1,6 @@
 django-admin startproject project
 cd project
 django-admin startapp core
+pip install django-crispy-forms
+pip install crispy-bootstrap5
 
