@@ -3,8 +3,9 @@ from datetime import datetime
 from django.urls import reverse_lazy
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit
+from .models import User
 
-class UniversityForm(forms.Form):
+class UniversityForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper(self)
@@ -12,20 +13,39 @@ class UniversityForm(forms.Form):
         self.helper.form_method = 'POST'
         self.helper.add_input(Submit('submit', 'Submit'))
 
-    SUBJECT_CHOICES = (
-        (1, 'Web Dev'),
-        (2, 'Programming'),
-        (3, 'Data'),
-    )
+    subject = forms.ChoiceField(choices=User.Subjects.choices)
+    dob = forms.DateField(widget=forms.DateInput(attrs={'type': 'date', 'max':datetime.now().date()}))
 
+    class Meta:
+        model = User
+        fields = ('username', 'password', 'dob', 'subject')
+        widgets = {
+            'password': forms.PasswordInput()
+        }
+
+    def save(self, commit=True):
+        user = super().save(commit=False)
+        user.set_password(self.cleaned_data['password'])
+        if commit:
+            user.save()
+        return user
+
+
+    
+
+    
+
+    '''
     name = forms.CharField(widget=forms.TextInput(attrs={
         'hx-get':reverse_lazy('index'),
         'hx-trigger':'keyup'
         }))
-    age = forms.IntegerField()
+    
     subject = forms.ChoiceField(
         choices=SUBJECT_CHOICES,
         widget=forms.RadioSelect())
-    dob = forms.DateField(widget=forms.DateInput(attrs={'type': 'date', 'max':datetime.now().date()}))
+    '''
+
+    
 
     
