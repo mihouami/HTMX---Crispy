@@ -29,6 +29,12 @@ class UniversityForm(forms.ModelForm):
         if commit:
             user.save()
         return user
+    
+    def clean_username(self):
+        username = self.cleaned_data['username']
+        if len(username) <= 3:
+            raise forms.ValidationError('Username is too short')
+        return username
 
 
     
