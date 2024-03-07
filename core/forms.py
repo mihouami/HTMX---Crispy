@@ -4,6 +4,7 @@ from django.urls import reverse_lazy
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit
 from .models import User
+from django.core.validators import MinLengthValidator
 
 class UniversityForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
@@ -19,8 +20,20 @@ class UniversityForm(forms.ModelForm):
         }
         self.helper.add_input(Submit('submit', 'Submit'))
 
-    subject = forms.ChoiceField(choices=User.Subjects.choices)
     dob = forms.DateField(widget=forms.DateInput(attrs={'type': 'date', 'max':datetime.now().date()}))
+    username = forms.CharField(validators=[MinLengthValidator(3)])
+
+    '''
+    subject = forms.ChoiceField(choices=User.Subjects.choices)
+    name = forms.CharField(widget=forms.TextInput(attrs={
+        'hx-get':reverse_lazy('index'),
+        'hx-trigger':'keyup'
+        }))
+    
+    subject = forms.ChoiceField(
+        choices=SUBJECT_CHOICES,
+        widget=forms.RadioSelect())
+    '''
 
     class Meta:
         model = User
@@ -36,26 +49,12 @@ class UniversityForm(forms.ModelForm):
             user.save()
         return user
     
+    '''
     def clean_username(self):
         username = self.cleaned_data['username']
         if len(username) <= 3:
             raise forms.ValidationError('Username is too short')
         return username
-
-
-    
-
-    
-
-    '''
-    name = forms.CharField(widget=forms.TextInput(attrs={
-        'hx-get':reverse_lazy('index'),
-        'hx-trigger':'keyup'
-        }))
-    
-    subject = forms.ChoiceField(
-        choices=SUBJECT_CHOICES,
-        widget=forms.RadioSelect())
     '''
 
     
