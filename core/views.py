@@ -21,4 +21,4 @@ def index(request):
         ctx.update(csrf(request))
         form_html = render_crispy_form(form, context=ctx) 
         return HttpResponse(form_html)  
-    return render(request, 'index.html', {'form':form})      
+    return render(request, 'index.html', {'form':form})        

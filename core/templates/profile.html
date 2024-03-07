@@ -1,2 +1,12 @@
-<h1>{{ request.user.username }}</h1>
-<p>You are studying {{ request.user.get_subject_display }}</p>
+<div hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
+  <h1>{{ request.user.username }}</h1>
+  <p>You are studying {{ request.user.get_subject_display }}</p>
+  <button
+    class="btn btn-danger"
+    hx-post="{% url 'logout' %}"
+    hx-push-urls="/"
+    hx-target="closest div"
+  >
+    Logout
+  </button>
+</div>
