@@ -20,11 +20,16 @@ class UniversityForm(forms.ModelForm):
         }
         self.helper.add_input(Submit('submit', 'Submit'))
 
-    dob = forms.DateField(widget=forms.DateInput(attrs={'type': 'date', 'max':datetime.now().date()}))
-    #username = forms.CharField(validators=[MinLengthValidator(3)])
-
-    '''
-    subject = forms.ChoiceField(choices=User.Subjects.choices)
+    dob = forms.DateField(widget=forms.DateInput(attrs={'type': 'date', 'max':datetime.now().date()}))   
+    ''' 
+    subject = forms.ChoiceField(choices=User.Subjects.choices,
+                                #widget=forms.Select(attrs={
+                                    'hx-get':reverse_lazy('check_subject'),
+                                    'hx-trigger':'change',
+                                    'hx-target':'#div_id_subject',
+                                }))
+    
+    username = forms.CharField(validators=[MinLengthValidator(3)])
     name = forms.CharField(widget=forms.TextInput(attrs={
         'hx-get':reverse_lazy('index'),
         'hx-trigger':'keyup'
@@ -41,12 +46,14 @@ class UniversityForm(forms.ModelForm):
         widgets = {
             'password': forms.PasswordInput(),
             'username':forms.TextInput(attrs={
-                'hx-get':reverse_lazy('check_username'),
-                'hx-trigger':'keyup changed',
-                'hx-target':'#div_id_username',
-            })
-            
-        }
+                        'hx-get':reverse_lazy('check_username'),
+                        'hx-trigger':'keyup changed',
+                        'hx-target':'#div_id_username',}),
+            'subject':forms.Select(attrs={
+                        'hx-get':reverse_lazy('check_subject'),
+                        'hx-trigger':'change',
+                        'hx-target':'#div_id_subject',})
+                }
 
     def save(self, commit=True):
         user = super().save(commit=False)
@@ -61,6 +68,12 @@ class UniversityForm(forms.ModelForm):
         if len(username) <= 3:
             raise forms.ValidationError('Username is too short')
         return username
+    
+    def clean_subject(self):
+        subject = self.cleaned_data['subject']
+        if User.objects.filter(subject=subject).count() >= 3:
+            raise forms.ValidationError('There are no spaces in this course')
+        return subject
 
     
 

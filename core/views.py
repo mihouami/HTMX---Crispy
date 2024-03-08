@@ -28,3 +28,8 @@ def check_username(request):
     form = UniversityForm(request.GET)
     #return render(request, 'index.html', {'form':form})  
     return HttpResponse(as_crispy_field(form['username'])) 
+
+def check_subject(request):
+    form = UniversityForm(request.GET)
+    #return render(request, 'index.html', {'form':form})  
+    return HttpResponse(as_crispy_field(form['subject'])) 
