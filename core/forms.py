@@ -19,8 +19,14 @@ class UniversityForm(forms.ModelForm):
             'hx-swap':'outerHTML'
         }
         self.helper.add_input(Submit('submit', 'Submit'))
+        #self.helper.add_input(Submit('submit', 'Submit', formnovalidate='formnovalidate'))
 
-    dob = forms.DateField(widget=forms.DateInput(attrs={'type': 'date', 'max':datetime.now().date()}))   
+    dob = forms.DateField(widget=forms.DateInput(attrs={
+                                                'type':'date', 
+                                                'max':datetime.now().date(),
+                                                'hx-get':reverse_lazy('check_dob'),
+                                                'hx-trigger':'change',
+                                                'hx-target':'#div_id_dob'}))
     ''' 
     subject = forms.ChoiceField(choices=User.Subjects.choices,
                                 #widget=forms.Select(attrs={
@@ -52,7 +58,7 @@ class UniversityForm(forms.ModelForm):
             'subject':forms.Select(attrs={
                         'hx-get':reverse_lazy('check_subject'),
                         'hx-trigger':'change',
-                        'hx-target':'#div_id_subject',})
+                        'hx-target':'#div_id_subject',}),
                 }
 
     def save(self, commit=True):
@@ -71,7 +77,7 @@ class UniversityForm(forms.ModelForm):
     
     def clean_subject(self):
         subject = self.cleaned_data['subject']
-        if User.objects.filter(subject=subject).count() >= 3:
+        if User.objects.filter(subject=subject).count() >= 5:
             raise forms.ValidationError('There are no spaces in this course')
         return subject
 

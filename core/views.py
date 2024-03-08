@@ -26,10 +26,24 @@ def index(request):
 
 def check_username(request):
     form = UniversityForm(request.GET)
-    #return render(request, 'index.html', {'form':form})  
-    return HttpResponse(as_crispy_field(form['username'])) 
+    context={
+        'field':as_crispy_field(form['username']),
+        'valid':not form['username'].errors,
+    }
+    return render(request, 'partials/field.html', context)
 
 def check_subject(request):
     form = UniversityForm(request.GET)
-    #return render(request, 'index.html', {'form':form})  
-    return HttpResponse(as_crispy_field(form['subject'])) 
+    context={
+        'field':as_crispy_field(form['subject']),
+        'valid':not form['subject'].errors,
+    }
+    return render(request, 'partials/field.html', context)
+
+def check_dob(request):
+    form = UniversityForm(request.GET)
+    context={
+        'field':as_crispy_field(form['dob']),
+        'valid':not form['dob'].errors,
+    }
+    return render(request, 'partials/field.html', context)
