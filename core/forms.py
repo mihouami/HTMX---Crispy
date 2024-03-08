@@ -21,7 +21,7 @@ class UniversityForm(forms.ModelForm):
         self.helper.add_input(Submit('submit', 'Submit'))
 
     dob = forms.DateField(widget=forms.DateInput(attrs={'type': 'date', 'max':datetime.now().date()}))
-    username = forms.CharField(validators=[MinLengthValidator(3)])
+    #username = forms.CharField(validators=[MinLengthValidator(3)])
 
     '''
     subject = forms.ChoiceField(choices=User.Subjects.choices)
@@ -39,7 +39,13 @@ class UniversityForm(forms.ModelForm):
         model = User
         fields = ('username', 'password', 'dob', 'subject')
         widgets = {
-            'password': forms.PasswordInput()
+            'password': forms.PasswordInput(),
+            'username':forms.TextInput(attrs={
+                'hx-get':reverse_lazy('check_username'),
+                'hx-trigger':'keyup changed',
+                'hx-target':'#div_id_username',
+            })
+            
         }
 
     def save(self, commit=True):
@@ -49,13 +55,12 @@ class UniversityForm(forms.ModelForm):
             user.save()
         return user
     
-    '''
+
     def clean_username(self):
         username = self.cleaned_data['username']
         if len(username) <= 3:
             raise forms.ValidationError('Username is too short')
         return username
-    '''
 
     
 
